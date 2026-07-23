@@ -1,5 +1,12 @@
 import { expect, test } from "@playwright/test";
 
+test("login screen offers a local demo path", async ({ page }) => {
+  await page.goto("/login");
+  await expect(page.getByRole("heading", { name: "Welcome back" })).toBeVisible();
+  await page.getByRole("button", { name: /Continue with local demo/i }).click();
+  await expect(page.getByRole("heading", { name: /Good morning, Nadia/i })).toBeVisible();
+});
+
 test("dashboard creates a content workflow item", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /Good morning, Nadia/i })).toBeVisible();
@@ -18,6 +25,29 @@ test("approved content exposes scheduling controls", async ({ page }) => {
   await expect(page.getByText("Publishing readiness", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: /Publish approved content/i })).toBeVisible();
   await expect(page.getByText("Schedule publishing", { exact: true })).toBeVisible();
+});
+
+test("reviewer can approve content from the detail drawer", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("table").getByText("How B2B brands can turn search intent into a content engine", { exact: true }).click();
+  await page.getByRole("button", { name: /Approve copy/i }).click();
+  await expect(page.getByText("Content approved", { exact: true })).toBeVisible();
+  await expect(page.getByText("Approved", { exact: true }).last()).toBeVisible();
+});
+
+test("content detail accepts an image attachment", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("table").getByText("Technical SEO migration checklist for growing websites", { exact: true }).click();
+  await page.locator("input[type=file]").setInputFiles({ name: "workflow.png", mimeType: "image/png", buffer: Buffer.from("demo-image") });
+  await expect(page.getByText("Media attached in demo mode", { exact: true })).toBeVisible();
+  await expect(page.getByText("Attached", { exact: true })).toBeVisible();
+});
+
+test("failed publishing content exposes a retry action", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("table").getByText("What changes when AI becomes part of the editorial workflow", { exact: true }).click();
+  await page.getByRole("button", { name: /Retry failed job/i }).click();
+  await expect(page.getByText("Failed job queued for retry", { exact: true })).toBeVisible();
 });
 
 test("workspace projects and team screens load", async ({ page }) => {

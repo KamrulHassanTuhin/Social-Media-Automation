@@ -60,6 +60,8 @@ Apply `infrastructure/migrations/006_audit_retention.sql` after migration 005 to
 
 Use `/health/providers?probe=true` for provider probes. Publishing jobs can be inspected at `/api/v1/publishing-jobs/content/{content_id}` and failed channel jobs can be retried with `/api/v1/publishing-jobs/{job_id}/retry`.
 
+Provider failure/recovery transitions emit deduplicated Slack alerts in non-local mode. Audit retention maintenance is scheduler-friendly: from `apps/api`, run `python maintenance.py` for a dry run or `python maintenance.py --apply` to delete records beyond each workspace policy.
+
 Future-dated publishing uses `POST /api/v1/content/{content_id}/schedule` with a timezone-aware `scheduled_for` value. The worker will not claim the channel job before that timestamp.
 
 When `NEXT_PUBLIC_USE_API=true`, the content detail drawer exposes the same scheduling flow and sends the browser session token plus workspace context to the API.

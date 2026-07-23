@@ -34,6 +34,8 @@ Set `AUDIT_RETENTION_DAYS` to the organization default. Workspace admins can ove
 6. Create a test content item, generate copy, approve it, and verify the publishing job log.
 7. Send a test invitation and verify the email webhook updates delivery state.
 
+For scheduled audit maintenance, run `python maintenance.py --apply` from `apps/api` using the platform scheduler. Run it first without `--apply` to preview eligible records.
+
 ## 4. Rollback and incident handling
 
 - Roll back the web and API image to the previous known-good commit if health checks or smoke tests fail.
