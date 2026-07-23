@@ -21,8 +21,8 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
-      - run: pnpm --filter @axis/web exec tsc --noEmit
-      - run: pnpm --filter @axis/web build
+      - run: pnpm --filter @nova/web exec tsc --noEmit
+      - run: pnpm --filter @nova/web build
 
   api:
     runs-on: ubuntu-latest

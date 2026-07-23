@@ -96,13 +96,13 @@ class JobAndMediaTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             store = LocalMediaStore(directory)
             with self.assertRaises(MediaValidationError):
-                asyncio.run(store.save("ws_demo", "project_axis", None, "file.exe", "application/octet-stream", b"data"))
+                asyncio.run(store.save("ws_demo", "project_studio", None, "file.exe", "application/octet-stream", b"data"))
 
     def test_media_store_checks_file_signature(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             store = LocalMediaStore(directory)
             with self.assertRaises(MediaValidationError):
-                asyncio.run(store.save("ws_demo", "project_axis", None, "file.png", "image/png", b"not-a-png"))
+                asyncio.run(store.save("ws_demo", "project_studio", None, "file.png", "image/png", b"not-a-png"))
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
--- AXIS Content Automation: initial Supabase/Postgres schema
+-- Nova Content Studio: initial Supabase/Postgres schema
 -- Apply this migration only to a development/staging Supabase project first.
 
 create extension if not exists pgcrypto;
