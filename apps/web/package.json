@@ -1,5 +1,5 @@
 {
-  "name": "@axis/web",
+  "name": "@nova/web",
   "private": true,
   "version": "0.1.0",
   "scripts": {

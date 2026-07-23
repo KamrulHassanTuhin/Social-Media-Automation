@@ -24,7 +24,7 @@ def _unauthorized(message: str = "A valid bearer token is required.") -> HTTPExc
 
 def _decode_token(token: str, settings: Settings) -> CurrentUser:
     if settings.app_env == "local" and token == "demo":
-        return CurrentUser("user_demo", "demo@axis.local", ("ws_demo",), ("WORKSPACE_ADMIN",), True)
+        return CurrentUser("user_demo", "demo@nova.local", ("ws_demo",), ("WORKSPACE_ADMIN",), True)
 
     if not settings.supabase_jwt_secret:
         raise _unauthorized("Supabase JWT verification is not configured.")
@@ -47,7 +47,7 @@ async def get_current_user(
 ) -> CurrentUser:
     if not authorization:
         if settings.app_env == "local":
-            return CurrentUser("user_demo", "demo@axis.local", ("ws_demo",), ("WORKSPACE_ADMIN",), True)
+            return CurrentUser("user_demo", "demo@nova.local", ("ws_demo",), ("WORKSPACE_ADMIN",), True)
         raise _unauthorized()
     scheme, _, token = authorization.partition(" ")
     if scheme.lower() != "bearer" or not token:

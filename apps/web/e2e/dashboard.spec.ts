@@ -23,7 +23,7 @@ test("approved content exposes scheduling controls", async ({ page }) => {
 test("workspace projects and team screens load", async ({ page }) => {
   await page.goto("/projects");
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
-  await expect(page.getByText("AXIS Consulting", { exact: true })).toBeVisible();
+  await expect(page.getByText("Content Studio", { exact: true })).toBeVisible();
 
   await page.goto("/team");
   await expect(page.getByRole("heading", { name: "Team" })).toBeVisible();
@@ -53,9 +53,9 @@ test("invitation acceptance screen loads from a workspace link", async ({ page }
 
 test("team admin can preview an invite and soft-disable a member", async ({ page }) => {
   await page.goto("/team");
-  await page.getByLabel("Invite email").fill("preview.member@axis.local");
+  await page.getByLabel("Invite email").fill("preview.member@nova.local");
   await page.getByRole("button", { name: /Preview email/i }).click();
-  await expect(page.getByText("You have been invited to AXIS OS", { exact: true })).toBeVisible();
+  await expect(page.getByText("You have been invited to Nova Studio", { exact: true })).toBeVisible();
 
   const memberRow = page.locator(".management-row").filter({ hasText: "Samira Islam" });
   await memberRow.getByText("Deactivate", { exact: true }).click();

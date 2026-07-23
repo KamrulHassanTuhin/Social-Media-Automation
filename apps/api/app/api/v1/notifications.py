@@ -41,14 +41,14 @@ async def notification_analytics(context: tuple[str, CurrentUser] = Depends(work
 
 
 @router.post("/webhook/email", response_model=dict, status_code=status.HTTP_202_ACCEPTED)
-async def email_webhook(request: Request, x_axis_signature: str | None = Header(default=None, alias="X-AXIS-Signature")):
+async def email_webhook(request: Request, x_nova_signature: str | None = Header(default=None, alias="X-Nova-Signature")):
     raw_body = await request.body()
     settings = get_settings()
     if settings.app_env != "local":
-        if not settings.email_webhook_secret or not x_axis_signature:
+        if not settings.email_webhook_secret or not x_nova_signature:
             raise HTTPException(status_code=401, detail={"code": "WEBHOOK_UNAUTHORIZED", "message": "A valid webhook signature is required."})
         expected = hmac.new(settings.email_webhook_secret.encode("utf-8"), raw_body, hashlib.sha256).hexdigest()
-        if not hmac.compare_digest(expected, x_axis_signature):
+        if not hmac.compare_digest(expected, x_nova_signature):
             raise HTTPException(status_code=401, detail={"code": "WEBHOOK_UNAUTHORIZED", "message": "A valid webhook signature is required."})
     try:
         payload = await request.json()

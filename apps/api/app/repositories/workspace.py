@@ -39,13 +39,13 @@ class AuditRecord:
 class InMemoryWorkspaceRepository:
     def __init__(self) -> None:
         self._projects = [
-            WorkspaceProject("project_demo", "AXIS Consulting", "axis-consulting", "ACTIVE"),
+            WorkspaceProject("project_demo", "Content Studio", "content-studio", "ACTIVE"),
             WorkspaceProject("project_growth", "Growth Lab", "growth-lab", "ACTIVE"),
         ]
         self._members = [
-            WorkspaceMember("user_demo", "Nadia Rahman", "WORKSPACE_ADMIN", "ACTIVE", "demo@axis.local"),
-            WorkspaceMember("user_writer", "Samira Islam", "TEAM_MEMBER", "ACTIVE", "samira@axis.local"),
-            WorkspaceMember("user_reviewer", "Maya Patel", "REVIEWER", "ACTIVE", "maya@axis.local"),
+            WorkspaceMember("user_demo", "Nadia Rahman", "WORKSPACE_ADMIN", "ACTIVE", "demo@nova.local"),
+            WorkspaceMember("user_writer", "Samira Islam", "TEAM_MEMBER", "ACTIVE", "samira@nova.local"),
+            WorkspaceMember("user_reviewer", "Maya Patel", "REVIEWER", "ACTIVE", "maya@nova.local"),
         ]
         self._audit: list[AuditRecord] = []
         from app.config.settings import get_settings

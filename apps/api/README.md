@@ -1,4 +1,4 @@
-# AXIS API
+# Nova Content API
 
 FastAPI boundary for authentication, authorization, content services, jobs, and provider adapters. The API exposes health endpoints and versioned routes under `/api/v1` with the response contract from the master specification.
 

@@ -53,7 +53,7 @@ class InMemoryContentRepository:
         self._seed()
 
     def _seed(self) -> None:
-        self.add(ContentRecord("cnt_demo_01", "ws_demo", "project_axis", "Search intent content engine", "BRIEF_READY", "NEEDS_REVIEW", "publisher_demo", "https://axis.example.com/search-intent", True, {"linkedin": "A practical search intent framework for B2B teams."}))
+        self.add(ContentRecord("cnt_demo_01", "ws_demo", "project_studio", "Search intent content engine", "BRIEF_READY", "NEEDS_REVIEW", "publisher_demo", "https://studio.example.com/search-intent", True, {"linkedin": "A practical search intent framework for B2B teams."}))
         self.add(ContentRecord("cnt_demo_02", "ws_demo", "project_growth", "Technical SEO migration checklist", "IN_PROGRESS"))
 
     def list(self, workspace_id: str, search: str | None = None) -> list[ContentRecord]:
