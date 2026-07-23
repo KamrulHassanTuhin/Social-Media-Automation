@@ -49,6 +49,8 @@
 - Provider message ID persistence, signed email webhooks, delivery/bounce/unsubscribe reconciliation, recipient suppression, and delivery analytics.
 - Operations health screen with provider probes, average response-time metrics, and recent health history.
 - Workspace-scoped audit retention policy, dry-run-first purge controls, and production deployment runbook.
+- Provider health transition alerts through the configured Slack notifier with failure/recovery deduplication.
+- One-shot audit retention maintenance command for cron or platform scheduler execution.
 - Playwright browser smoke coverage for content creation and approved-content scheduling controls.
 
 ## Deliberate local-only boundaries
@@ -62,5 +64,4 @@
 
 ## Next implementation slice
 
-1. Add end-to-end coverage for login, approval, media upload, and publishing retry flows.
-2. Add production alerting integrations and scheduled retention maintenance execution.
+1. Configure production credentials, migrations, hosting, and scheduler-owned maintenance outside the repository.

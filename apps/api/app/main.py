@@ -19,6 +19,7 @@ from app.jobs.worker import JobWorker
 from app.repositories.factory import content_repository
 from app.jobs.publishing import publishing_store
 from app.services.health import health_store
+from app.services.alerting import health_alert_manager
 
 app = FastAPI(
     title="Nova Content Automation API",
@@ -93,7 +94,8 @@ async def provider_health(probe: bool = Query(default=False)) -> dict[str, Any]:
     if probe:
         for item in data:
             health_store.record(item["provider"], item["probe"], item.get("response_time_ms"), {"status": item["status"]})
-    return {"data": data}
+    alerts = health_alert_manager.process(data, build_integrations().notifier) if probe else []
+    return {"data": data, "meta": {"alerts_emitted": alerts}}
 
 
 @app.get("/health/history")

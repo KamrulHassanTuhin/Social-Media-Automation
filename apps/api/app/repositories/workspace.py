@@ -56,6 +56,9 @@ class InMemoryWorkspaceRepository:
             return []
         return list(self._projects) if include_archived else [project for project in self._projects if project.status == "ACTIVE"]
 
+    def list_workspace_ids(self) -> list[str]:
+        return ["ws_demo"]
+
     def list_members(self, workspace_id: str) -> list[WorkspaceMember]:
         if workspace_id != "ws_demo":
             return []
@@ -147,6 +150,10 @@ class SupabaseWorkspaceRepository:
             query = query.eq("status", "ACTIVE")
         result: Any = query.order("name").execute()
         return [WorkspaceProject(str(row["id"]), row["name"], row["slug"], row["status"]) for row in result.data or []]
+
+    def list_workspace_ids(self) -> list[str]:
+        result: Any = self.client.table("workspaces").select("id").execute()
+        return [str(row["id"]) for row in result.data or []]
 
     def list_members(self, workspace_id: str) -> list[WorkspaceMember]:
         result: Any = self.client.table("workspace_members").select("user_id,role,status,user_profiles(full_name)").eq("workspace_id", workspace_id).in_("status", ["ACTIVE", "INVITED", "DISABLED"]).execute()
