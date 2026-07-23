@@ -29,7 +29,7 @@ def build_social_copy_prompt(brand: BrandContext, content: ContentContext) -> st
     """Build a structured provider-neutral prompt with explicit JSON output rules."""
     payload = {"brand": asdict(brand), "content": asdict(content)}
     return (
-        "You are the AXIS social copy assistant. Generate channel-specific copy "
+        "You are the Content Studio social copy assistant. Generate channel-specific copy "
         "for Facebook/Instagram, LinkedIn, YouTube, GBP, and Reddit. Return only "
         "valid JSON with keys facebook_instagram, linkedin, youtube, gbp, reddit. "
         "Respect channel length limits, avoid prohibited words, and do not invent "

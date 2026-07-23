@@ -18,7 +18,7 @@ class WorkspaceAdminWorkflowTest(unittest.TestCase):
         project_id = project.json()["data"]["id"]
         archived = self.client.patch(f"/api/v1/workspace/projects/{project_id}", headers=self.headers, json={"name": "Test Workspace Project", "slug": "test-workspace-project", "status": "ARCHIVED"})
         self.assertEqual(archived.status_code, 200)
-        invite = self.client.post("/api/v1/workspace/members/invite", headers=self.headers, json={"email": "test.member@axis.local", "role": "REVIEWER"})
+        invite = self.client.post("/api/v1/workspace/members/invite", headers=self.headers, json={"email": "test.member@nova.local", "role": "REVIEWER"})
         self.assertEqual(invite.status_code, 202)
         notifications = self.client.get("/api/v1/notifications/outbox", headers=self.headers)
         self.assertEqual(notifications.status_code, 200)
@@ -29,7 +29,7 @@ class WorkspaceAdminWorkflowTest(unittest.TestCase):
         self.assertEqual(disabled.status_code, 200)
         reactivated = self.client.patch("/api/v1/workspace/members/user_writer/status", headers=self.headers, json={"status": "ACTIVE"})
         self.assertEqual(reactivated.status_code, 200)
-        preview = self.client.post("/api/v1/workspace/invitations/preview", headers=self.headers, json={"email": "preview@axis.local"})
+        preview = self.client.post("/api/v1/workspace/invitations/preview", headers=self.headers, json={"email": "preview@nova.local"})
         self.assertEqual(preview.status_code, 200)
         self.assertIn("subject", preview.json()["data"])
         audit = self.client.get("/api/v1/workspace/audit-log", headers=self.headers)
@@ -46,7 +46,7 @@ class WorkspaceAdminWorkflowTest(unittest.TestCase):
         self.assertEqual(response.status_code, 409)
 
     def test_email_webhook_updates_delivery_state_and_analytics(self) -> None:
-        event = notification_outbox.enqueue("ws_demo", "EMAIL", {"to": "bounce-test@axis.local", "subject": "Test"}, f"webhook-test:{uuid4()}")
+        event = notification_outbox.enqueue("ws_demo", "EMAIL", {"to": "bounce-test@nova.local", "subject": "Test"}, f"webhook-test:{uuid4()}")
         notification_outbox.mark_sent(event, "provider-test-message")
         response = self.client.post("/api/v1/notifications/webhook/email", json={"type": "email.bounced", "data": {"email_id": "provider-test-message", "reason": "hard_bounce"}})
         self.assertEqual(response.status_code, 202)

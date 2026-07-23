@@ -1,6 +1,6 @@
-# AXIS Internal Social Content Automation
+# Nova Content Studio
 
-Internal content operations SaaS for AXIS Consulting. The application is designed around the master specification in `axis_internal_social_content_automation_saas_master_spec.txt`.
+Internal content operations SaaS for Content Studio. The application is designed around the master specification in `axis_internal_social_content_automation_saas_master_spec.txt`.
 
 ## Current slice
 
@@ -69,8 +69,8 @@ When `NEXT_PUBLIC_USE_API=true`, the content detail drawer exposes the same sche
 Install the Playwright browser once, then run the dashboard smoke suite:
 
 ```powershell
-pnpm --filter @axis/web exec playwright install chromium
-pnpm --filter @axis/web e2e
+pnpm --filter @nova/web exec playwright install chromium
+pnpm --filter @nova/web e2e
 ```
 
 ## Database

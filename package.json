@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "packageManager": "pnpm@9.15.4",
   "scripts": {
-    "dev": "pnpm --filter @axis/web dev",
-    "build": "pnpm --filter @axis/web build",
-    "lint": "pnpm --filter @axis/web lint",
-    "typecheck": "pnpm --filter @axis/web typecheck"
+    "dev": "pnpm --filter @nova/web dev",
+    "build": "pnpm --filter @nova/web build",
+    "lint": "pnpm --filter @nova/web lint",
+    "typecheck": "pnpm --filter @nova/web typecheck"
   }
 }

@@ -13,7 +13,7 @@ class PermissionRulesTest(unittest.TestCase):
         self.assertNotIn("PUBLISH_CONTENT", permissions)
 
     def test_read_only_is_denied_mutation(self) -> None:
-        user = CurrentUser("user_read", "read@axis.local", ("ws_demo",), ("READ_ONLY",))
+        user = CurrentUser("user_read", "read@nova.local", ("ws_demo",), ("READ_ONLY",))
         with self.assertRaises(HTTPException) as error:
             require_permission(("ws_demo", user), "CREATE_CONTENT")
         self.assertEqual(error.exception.status_code, 403)

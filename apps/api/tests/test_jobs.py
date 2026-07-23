@@ -51,7 +51,7 @@ class JobAndMediaTest(unittest.TestCase):
         outbox = InMemoryNotificationOutbox()
         publishing = InMemoryPublishingStore()
         worker = JobWorker(queue, outbox, repository, publishing, IntegrationBundle(MockAIProvider(), MockPublisher(), MockNotifier(), MockEmailNotifier()))
-        event = outbox.enqueue("ws_demo", "EMAIL", {"to": "member@axis.local", "subject": "Welcome", "body": "Join us"}, "email:test")
+        event = outbox.enqueue("ws_demo", "EMAIL", {"to": "member@nova.local", "subject": "Welcome", "body": "Join us"}, "email:test")
         queue.enqueue("SEND_NOTIFICATION", "ws_demo", {"event_id": event.id}, "notification:test")
         worker.drain_local()
         self.assertEqual(outbox.get(event.id).status, "SENT")

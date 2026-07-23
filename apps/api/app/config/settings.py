@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     slack_webhook_url: str | None = None
     email_api_key: str | None = None
     email_base_url: str = "https://api.resend.com"
-    email_from: str = "AXIS OS <notifications@axisconsulting.com>"
+    email_from: str = "Nova Studio <notifications@yourdomain.com>"
     email_webhook_secret: str | None = None
     audit_retention_days: int = 365
     encryption_key: str | None = None

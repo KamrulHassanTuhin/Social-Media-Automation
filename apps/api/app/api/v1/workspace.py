@@ -52,7 +52,7 @@ async def export_audit_log(action: str | None = Query(default=None), entity_type
     writer.writerow(["id", "actor_id", "action", "entity_type", "entity_id", "created_at"])
     for record in workspace_repository.list_audit(workspace_id, 200, action, entity_type):
         writer.writerow([record.id, record.actor_id, record.action, record.entity_type, record.entity_id or "", record.created_at])
-    return StreamingResponse(iter([output.getvalue()]), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=axis-audit-log.csv"})
+    return StreamingResponse(iter([output.getvalue()]), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=nova-audit-log.csv"})
 
 
 @router.get("/audit-retention", response_model=dict)
@@ -102,7 +102,7 @@ async def update_project(project_id: str, payload: ProjectUpdate, context: tuple
 async def invite_member(payload: MemberInvite, context: tuple[str, CurrentUser] = Depends(workspace_context)):
     workspace_id, current_user = require_permission(context, "MANAGE_WORKSPACE")
     member = workspace_repository.invite_member(workspace_id, payload.email, payload.role, current_user.id)
-    email = build_invitation_email(payload.email, "AXIS Consulting", current_user.email or "An AXIS workspace admin", f"{get_settings().app_base_url}/invite/accept?workspace_id={workspace_id}")
+    email = build_invitation_email(payload.email, "Content Studio", current_user.email or "A workspace admin", f"{get_settings().app_base_url}/invite/accept?workspace_id={workspace_id}")
     event = notification_outbox.enqueue(workspace_id, "EMAIL", {"to": payload.email, "subject": email.subject, "body": email.body_text, "template": "workspace_invitation"}, f"workspace-invite:{workspace_id}:{payload.email.lower()}", member.user_id)
     job_queue.enqueue("SEND_NOTIFICATION", workspace_id, {"event_id": event.id}, f"notification:{event.id}")
     return {"success": True, "data": member.__dict__, "error": None, "meta": {"audit_logged": True, "email_template": email.__dict__, "notification_id": event.id}}
@@ -111,7 +111,7 @@ async def invite_member(payload: MemberInvite, context: tuple[str, CurrentUser] 
 @router.post("/invitations/preview", response_model=dict)
 async def preview_invitation_email(payload: InvitationEmailPreview, context: tuple[str, CurrentUser] = Depends(workspace_context)):
     workspace_id, current_user = require_permission(context, "MANAGE_WORKSPACE")
-    email = build_invitation_email(payload.email, "AXIS Consulting", current_user.email or "An AXIS workspace admin", f"{get_settings().app_base_url}/invite/accept?workspace_id={workspace_id}")
+    email = build_invitation_email(payload.email, "Content Studio", current_user.email or "A workspace admin", f"{get_settings().app_base_url}/invite/accept?workspace_id={workspace_id}")
     return {"success": True, "data": email.__dict__, "error": None, "meta": {"delivery": "preview_only"}}
 
 

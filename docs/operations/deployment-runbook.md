@@ -1,4 +1,4 @@
-# AXIS OS production deployment runbook
+# Nova Studio production deployment runbook
 
 ## 1. Required infrastructure
 

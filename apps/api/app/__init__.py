@@ -1,1 +1,1 @@
-"""AXIS Content Automation API."""
+"""Nova Content Automation API."""

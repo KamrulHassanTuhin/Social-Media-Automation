@@ -3,8 +3,8 @@ import { QueryProvider } from "../components/query-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AXIS Content OS",
-  description: "Internal social content operations platform for AXIS Consulting",
+  title: "Nova Content Studio",
+  description: "A focused social content operations workspace",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

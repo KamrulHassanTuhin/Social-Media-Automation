@@ -21,9 +21,9 @@ from app.jobs.publishing import publishing_store
 from app.services.health import health_store
 
 app = FastAPI(
-    title="AXIS Content Automation API",
+    title="Nova Content Automation API",
     version="0.1.0",
-    description="Versioned API boundary for the AXIS content operations platform.",
+    description="Versioned API boundary for the Nova content operations platform.",
 )
 
 settings = get_settings()
@@ -50,7 +50,7 @@ job_worker = JobWorker(job_queue, notification_outbox, content_repository, publi
 async def health() -> dict[str, Any]:
     return {
         "status": "ok",
-        "service": "axis-api",
+        "service": "nova-api",
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
