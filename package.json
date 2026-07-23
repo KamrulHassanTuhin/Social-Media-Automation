@@ -1,0 +1,12 @@
+{
+  "name": "axis-content-automation",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "dev": "pnpm --filter @axis/web dev",
+    "build": "pnpm --filter @axis/web build",
+    "lint": "pnpm --filter @axis/web lint",
+    "typecheck": "pnpm --filter @axis/web typecheck"
+  }
+}
