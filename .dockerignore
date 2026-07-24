@@ -1,0 +1,12 @@
+.git
+.github
+node_modules
+apps/web/.next
+apps/web/test-results
+apps/api/.pytest_cache
+apps/api/__pycache__
+apps/api/**/__pycache__
+var/media
+*.env
+*.env.local
+*.log
