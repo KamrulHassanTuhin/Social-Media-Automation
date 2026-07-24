@@ -24,6 +24,8 @@ if str(API_ROOT) not in sys.path:
 
 
 modal_app = modal.App("nova-content-studio")
+# Modal CLI discovers the application through the conventional ``app`` name.
+app = modal_app
 runtime_secret = modal.Secret.from_name("nova-runtime")
 
 api_image = (
