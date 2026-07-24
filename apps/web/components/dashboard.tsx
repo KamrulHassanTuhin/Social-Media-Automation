@@ -102,6 +102,7 @@ export function Dashboard() {
   const useApi = process.env.NEXT_PUBLIC_USE_API === "true";
   const defaultProjectId = process.env.NEXT_PUBLIC_DEFAULT_PROJECT_ID;
   const defaultWorkspaceId = process.env.NEXT_PUBLIC_DEFAULT_WORKSPACE_ID;
+  const defaultWorkspaceName = process.env.NEXT_PUBLIC_DEFAULT_WORKSPACE_NAME ?? "Workspace";
   const queryClient = useQueryClient();
   const workspaceContextQuery = useQuery({ queryKey: ["workspace-context", defaultWorkspaceId], queryFn: () => getWorkspaceContext(), enabled: useApi });
   const contentQuery = useQuery({ queryKey: ["content", defaultWorkspaceId, query], queryFn: () => listContent({ search: query.length >= 2 ? query : undefined }), enabled: useApi });
@@ -252,7 +253,7 @@ export function Dashboard() {
     <div className="app-shell">
       <aside className={`sidebar ${mobileNav ? "sidebar-open" : ""}`}>
         <div className="brand-lockup"><div className="brand-mark">N</div><div><div className="brand-name">NOVA <span>STUDIO</span></div><div className="brand-subtitle">Content operations</div></div><button className="mobile-close" onClick={() => setMobileNav(false)}><X size={18} /></button></div>
-        <div className="workspace-switcher"><div className="workspace-avatar">{(workspaceContextQuery.data?.workspaceName ?? "Workspace").slice(0, 2).toUpperCase()}</div><div className="workspace-copy"><strong>{workspaceContextQuery.data?.workspaceName ?? "Workspace"}</strong><span>{useApi ? `${members.filter((member) => member.status === "ACTIVE").length} active members` : "Internal workspace"}</span></div><ChevronDown size={15} className="muted-icon" /></div>
+        <div className="workspace-switcher"><div className="workspace-avatar">{(workspaceContextQuery.data?.workspaceName ?? defaultWorkspaceName).slice(0, 2).toUpperCase()}</div><div className="workspace-copy"><strong>{workspaceContextQuery.data?.workspaceName ?? defaultWorkspaceName}</strong><span>{useApi ? `${members.filter((member) => member.status === "ACTIVE").length} active members` : "Internal workspace"}</span></div><ChevronDown size={15} className="muted-icon" /></div>
         <nav className="nav-group" aria-label="Primary navigation">
           <div className="nav-label">Workspace</div>
           {navItems.map(({ label, icon: Icon, active, count }) => <button key={label} className={`nav-item ${active ? "active" : ""}`} onClick={() => flash(`${label} view is coming next`)}><Icon size={17} /><span>{label}</span>{count && <span className="nav-count">{count}</span>}</button>)}
