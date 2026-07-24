@@ -64,6 +64,7 @@ export type WorkspaceMember = {
 
 export type WorkspaceContext = {
   workspaceId: string;
+  workspaceName: string;
   userId: string;
   email?: string | null;
   roles: string[];

@@ -21,7 +21,8 @@ router = APIRouter(prefix="/workspace", tags=["workspace"])
 @router.get("/context", response_model=dict)
 async def get_workspace_context(context: tuple[str, CurrentUser] = Depends(workspace_context)):
     workspace_id, current_user = context
-    return {"success": True, "data": {"workspace_id": workspace_id, "user_id": current_user.id, "email": current_user.email, "roles": list(current_user.roles), "permissions": sorted(permissions_for(current_user.roles))}, "error": None, "meta": {}}
+    workspace_name = workspace_repository.get_workspace_name(workspace_id) or "Workspace"
+    return {"success": True, "data": {"workspace_id": workspace_id, "workspace_name": workspace_name, "user_id": current_user.id, "email": current_user.email, "roles": list(current_user.roles), "permissions": sorted(permissions_for(current_user.roles))}, "error": None, "meta": {}}
 
 
 @router.get("/projects", response_model=dict)

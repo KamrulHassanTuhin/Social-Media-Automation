@@ -59,6 +59,9 @@ class InMemoryWorkspaceRepository:
     def list_workspace_ids(self) -> list[str]:
         return ["ws_demo"]
 
+    def get_workspace_name(self, workspace_id: str) -> str | None:
+        return "Content Studio" if workspace_id == "ws_demo" else None
+
     def list_members(self, workspace_id: str) -> list[WorkspaceMember]:
         if workspace_id != "ws_demo":
             return []
@@ -154,6 +157,10 @@ class SupabaseWorkspaceRepository:
     def list_workspace_ids(self) -> list[str]:
         result: Any = self.client.table("workspaces").select("id").execute()
         return [str(row["id"]) for row in result.data or []]
+
+    def get_workspace_name(self, workspace_id: str) -> str | None:
+        row: Any = self.client.table("workspaces").select("name").eq("id", workspace_id).maybe_single().execute().data
+        return row.get("name") if row else None
 
     def list_members(self, workspace_id: str) -> list[WorkspaceMember]:
         result: Any = self.client.table("workspace_members").select("user_id,role,status,user_profiles(full_name)").eq("workspace_id", workspace_id).in_("status", ["ACTIVE", "INVITED", "DISABLED"]).execute()

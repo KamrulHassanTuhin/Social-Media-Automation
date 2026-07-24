@@ -177,8 +177,8 @@ export async function listMembers(options: { token?: string } = {}): Promise<Wor
 }
 
 export async function getWorkspaceContext(options: { token?: string } = {}): Promise<WorkspaceContext> {
-  const context = await apiRequest<{ workspace_id: string; user_id: string; email: string | null; roles: string[]; permissions: string[] }>("/workspace/context", {}, options);
-  return { workspaceId: context.workspace_id, userId: context.user_id, email: context.email, roles: context.roles, permissions: context.permissions };
+  const context = await apiRequest<{ workspace_id: string; workspace_name: string; user_id: string; email: string | null; roles: string[]; permissions: string[] }>("/workspace/context", {}, options);
+  return { workspaceId: context.workspace_id, workspaceName: context.workspace_name, userId: context.user_id, email: context.email, roles: context.roles, permissions: context.permissions };
 }
 
 export async function createProject(name: string, slug?: string): Promise<WorkspaceProject> {
