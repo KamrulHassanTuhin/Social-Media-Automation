@@ -7,6 +7,7 @@
 - API service running behind HTTPS with a stable worker process.
 - Web app deployed with the API base URL and Supabase browser values.
 - Email provider webhook configured to `POST /api/v1/notifications/webhook/email`.
+- Generic container templates are available in `apps/api/Dockerfile`, `apps/web/Dockerfile`, and `docker-compose.production.yml`.
 
 ## 2. Required secrets and configuration
 
@@ -35,6 +36,8 @@ Set `AUDIT_RETENTION_DAYS` to the organization default. Workspace admins can ove
 7. Send a test invitation and verify the email webhook updates delivery state.
 
 For scheduled audit maintenance, run `python maintenance.py --apply` from `apps/api` using the platform scheduler. Run it first without `--apply` to preview eligible records.
+
+For a container-based release, copy `apps/api/.env.example` to `apps/api/.env`, provide the web `NEXT_PUBLIC_*` build arguments through the compose environment, then run `docker compose -f docker-compose.production.yml up -d --build`.
 
 ## 4. Rollback and incident handling
 

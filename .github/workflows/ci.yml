@@ -23,6 +23,8 @@ jobs:
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm --filter @nova/web exec tsc --noEmit
       - run: pnpm --filter @nova/web build
+      - run: pnpm --filter @nova/web exec playwright install --with-deps chromium
+      - run: pnpm --filter @nova/web e2e
 
   api:
     runs-on: ubuntu-latest
