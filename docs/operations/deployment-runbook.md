@@ -34,6 +34,18 @@ Set `AUDIT_RETENTION_DAYS` to the organization default. Workspace admins can ove
 4. Run `GET /health`, `GET /health/providers?probe=true`, `GET /health/queue`, and `GET /health/storage`.
 5. Open `/operations` and confirm provider probes and response-time history are recorded.
 6. Create a test content item, generate copy, approve it, and verify the publishing job log.
+
+## Google Sheet automation
+
+The scheduled `sheet_automation_tick` function is safe by default: `SHEET_AUTOMATION_DRY_RUN=true` validates eligible rows and records `DRY_RUN` entries without publishing. It requires a Google service-account JSON with access to the workbook and a Nuelink API key. Before enabling live mode:
+
+1. Share the workbook with the service-account email as an editor.
+2. Set `GOOGLE_SHEETS_SPREADSHEET_ID` and `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON` in the Modal `nova-runtime` secret.
+3. Keep `SHEET_AUTOMATION_DRY_RUN=true` and confirm the validation rows in `Automation Log`.
+4. Verify the Nuelink destination and API key with an approved test account.
+5. Set `SHEET_AUTOMATION_DRY_RUN=false` and monitor `Automation Log` and the Modal function logs.
+
+The worker uses `Content ID` plus channel success records as its duplicate guard, limits retries to `SHEET_AUTOMATION_MAX_RETRIES`, and never retries rows paused after the limit unless `Manual Retry` is enabled.
 7. Send a test invitation and verify the email webhook updates delivery state.
 
 For scheduled audit maintenance, run `python maintenance.py --apply` from `apps/api` using the platform scheduler. Run it first without `--apply` to preview eligible records.

@@ -52,6 +52,9 @@
 - Provider health transition alerts through the configured Slack notifier with failure/recovery deduplication.
 - One-shot audit retention maintenance command for cron or platform scheduler execution.
 - Playwright browser smoke coverage for content creation and approved-content scheduling controls.
+- Google Sheets server-side client using runtime-only service-account credentials.
+- Scheduled Sheet automation worker with dry-run validation, Nuelink handoff, channel-level duplicate protection, retry limits, and append-only Automation Log writes.
+- Sheet automation tests covering missing links, dry-run, duplicate channel success, and partial provider failure.
 
 ## Deliberate local-only boundaries
 
@@ -62,6 +65,8 @@
 - Local mode uses in-memory queue and local files; non-local mode uses `job_queue`, `notification_outbox`, and the private `axis-media` Supabase Storage bucket.
 - Provider credential responses are always masked; plaintext is never returned by integration APIs.
 
-## Next implementation slice
+## Deployment-owned prerequisites
 
 1. Configure production credentials, migrations, hosting, and scheduler-owned maintenance outside the repository.
+2. Share the workbook with the Google service-account email and add `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON` to the Modal `nova-runtime` secret.
+3. Keep `SHEET_AUTOMATION_DRY_RUN=true` until Nuelink credentials and an approved test destination are verified.

@@ -27,6 +27,12 @@ class Settings(BaseSettings):
     audit_retention_days: int = 365
     encryption_key: str | None = None
     provider_rate_limit_per_minute: int = 60
+    google_sheets_spreadsheet_id: str | None = None
+    google_sheets_service_account_json: str | None = None
+    google_sheets_master_range: str = "'Master View'!A3:AI97"
+    google_sheets_log_range: str = "'Automation Log'!A1:L500"
+    sheet_automation_dry_run: bool = True
+    sheet_automation_max_retries: int = 3
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore", case_sensitive=False)
 

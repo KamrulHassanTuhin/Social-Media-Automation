@@ -12,6 +12,8 @@ The repository currently contains:
 
 The web app runs with local demo data until Supabase and provider credentials are configured. Set `NEXT_PUBLIC_USE_API=true` to use the typed list/create/generate/approve/publish/schedule client, workspace project/member context, React Query cache, media upload, and publishing-job retry flows. AI, Nuelink, and Slack calls are intentionally represented as adapter boundaries; no secret is exposed in the browser.
 
+The Google Sheet automation worker is available through `sheet_automation_tick` in `infrastructure/modal/modal_app.py`. It reads `Master View`, validates rows marked `Ready to Publish` or `Scheduled`, writes each attempt to `Automation Log`, and updates the control columns. It is dry-run by default. Configure `GOOGLE_SHEETS_SPREADSHEET_ID`, `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`, and `NUELINK_API_KEY` in the runtime secret, then set `SHEET_AUTOMATION_DRY_RUN=false` only after an approved test destination is available. No credentials belong in the workbook.
+
 ## Run the web app
 
 ```powershell

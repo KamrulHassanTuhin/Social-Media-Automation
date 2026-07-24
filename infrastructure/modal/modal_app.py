@@ -93,6 +93,25 @@ def worker_tick() -> dict[str, str | bool | None]:
     }
 
 
+@modal_app.function(
+    image=api_image,
+    secrets=[runtime_secret],
+    schedule=modal.Period(minutes=5),
+    timeout=120,
+)
+def sheet_automation_tick() -> dict:
+    """Validate and publish eligible Google Sheet rows.
+
+    This is dry-run by default. Set SHEET_AUTOMATION_DRY_RUN=false only after
+    Google Sheets and Nuelink credentials have been tested against an approved
+    destination.
+    """
+
+    from app.services.sheet_automation import run_sheet_automation
+
+    return run_sheet_automation()
+
+
 @modal_app.local_entrypoint()
 def main() -> None:
     print("Deploy with: modal deploy infrastructure/modal/modal_app.py")

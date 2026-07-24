@@ -20,6 +20,7 @@ from app.repositories.factory import content_repository
 from app.jobs.publishing import publishing_store
 from app.services.health import health_store
 from app.services.alerting import health_alert_manager
+from app.integrations.google_sheets import GoogleSheetsClient, GoogleSheetsConfig
 
 app = FastAPI(
     title="Nova Content Automation API",
@@ -58,6 +59,11 @@ async def health() -> dict[str, Any]:
 
 @app.get("/health/providers")
 async def provider_health(probe: bool = Query(default=False)) -> dict[str, Any]:
+    def google_sheets_probe() -> bool:
+        if not settings.google_sheets_spreadsheet_id or not settings.google_sheets_service_account_json:
+            return False
+        return GoogleSheetsClient(GoogleSheetsConfig(settings.google_sheets_spreadsheet_id, settings.google_sheets_service_account_json)).health_check()
+
     def state(configured: bool) -> str:
         if settings.app_env == "local":
             return "MOCK"
@@ -69,6 +75,7 @@ async def provider_health(probe: bool = Query(default=False)) -> dict[str, Any]:
             {"provider": "nuelink", "status": state(bool(settings.nuelink_api_key)), "checked_at": datetime.now(timezone.utc).isoformat()},
             {"provider": "slack", "status": state(bool(settings.slack_webhook_url)), "checked_at": datetime.now(timezone.utc).isoformat()},
             {"provider": "email", "status": state(bool(settings.email_api_key)), "checked_at": datetime.now(timezone.utc).isoformat()},
+            {"provider": "google_sheets", "status": state(bool(settings.google_sheets_spreadsheet_id and settings.google_sheets_service_account_json)), "checked_at": datetime.now(timezone.utc).isoformat()},
         ]
     response_times: dict[str, int] = {}
     if probe:
@@ -89,6 +96,7 @@ async def provider_health(probe: bool = Query(default=False)) -> dict[str, Any]:
             "nuelink": timed_check("nuelink", integrations.publisher.health_check),
             "slack": timed_check("slack", integrations.notifier.health_check),
             "email": timed_check("email", integrations.email.health_check if integrations.email else lambda: False),
+            "google_sheets": timed_check("google_sheets", google_sheets_probe),
         }
         data = [{**item, "probe": "PASS" if checks[item["provider"]] else "FAIL", "response_time_ms": response_times[item["provider"]]} for item in data]
     if probe:
