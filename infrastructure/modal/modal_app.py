@@ -17,8 +17,8 @@ from pathlib import Path
 import modal
 
 
-ROOT = Path(__file__).resolve().parents[2]
-API_ROOT = ROOT / "apps" / "api"
+LOCAL_ROOT = Path.cwd()
+API_ROOT = LOCAL_ROOT / "apps" / "api"
 if str(API_ROOT) not in sys.path:
     sys.path.insert(0, str(API_ROOT))
 
@@ -32,6 +32,7 @@ api_image = (
     modal.Image.debian_slim(python_version="3.12")
     .pip_install_from_requirements(str(API_ROOT / "requirements.txt"))
     .add_local_python_source("app", copy=True)
+    .add_local_dir(str(LOCAL_ROOT / "apps" / "web" / "out"), remote_path="/root/web_out", copy=True)
 )
 
 
@@ -41,7 +42,29 @@ api_image = (
 )
 @modal.asgi_app()
 def api():
+    from pathlib import Path as LocalPath
+
+    from fastapi.responses import FileResponse
+
     from app.main import app
+
+    web_root = LocalPath("/root/web_out")
+
+    @app.get("/", include_in_schema=False)
+    async def frontend_root():
+        return FileResponse(web_root / "index.html")
+
+    @app.get("/{path:path}", include_in_schema=False)
+    async def frontend_route(path: str):
+        requested = (web_root / path).resolve()
+        if requested.is_file() and web_root in requested.parents:
+            return FileResponse(requested)
+
+        html_page = (web_root / f"{path}.html").resolve()
+        if html_page.is_file() and web_root in html_page.parents:
+            return FileResponse(html_page)
+
+        return FileResponse(web_root / "index.html")
 
     return app
 
