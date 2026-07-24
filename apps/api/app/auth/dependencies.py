@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from functools import lru_cache
 
 import jwt
 from fastapi import Depends, Header, HTTPException, status
@@ -27,7 +28,7 @@ def _decode_token(token: str, settings: Settings) -> CurrentUser:
         return CurrentUser("user_demo", "demo@nova.local", ("ws_demo",), ("WORKSPACE_ADMIN",), True)
 
     if not settings.supabase_jwt_secret:
-        raise _unauthorized("Supabase JWT verification is not configured.")
+        return _decode_with_supabase_auth(token, settings)
     try:
         claims = jwt.decode(token, settings.supabase_jwt_secret, algorithms=["HS256"], audience="authenticated")
     except jwt.PyJWTError as exc:
@@ -39,6 +40,37 @@ def _decode_token(token: str, settings: Settings) -> CurrentUser:
     workspace_ids = tuple(str(value) for value in raw_workspaces if value)
     roles = tuple(str(value) for value in raw_roles if value)
     return CurrentUser(str(claims["sub"]), claims.get("email"), workspace_ids, roles)
+
+
+@lru_cache
+def _supabase_auth_client(url: str, service_role_key: str):
+    from supabase import Client, create_client
+
+    client: Client = create_client(url, service_role_key)
+    return client
+
+
+def _decode_with_supabase_auth(token: str, settings: Settings) -> CurrentUser:
+    if not settings.supabase_url or not settings.supabase_service_role_key:
+        raise _unauthorized("Supabase authentication is not configured.")
+
+    try:
+        response = _supabase_auth_client(settings.supabase_url, settings.supabase_service_role_key).auth.get_user(token)
+        user = response.user
+        if not user:
+            raise _unauthorized("The bearer token is invalid or expired.")
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise _unauthorized("The bearer token is invalid or expired.") from exc
+
+    app_metadata = getattr(user, "app_metadata", None) or {}
+    user_metadata = getattr(user, "user_metadata", None) or {}
+    raw_workspaces = app_metadata.get("workspace_ids") or user_metadata.get("workspace_ids") or []
+    raw_roles = app_metadata.get("roles") or user_metadata.get("roles") or []
+    workspace_ids = tuple(str(value) for value in raw_workspaces if value)
+    roles = tuple(str(value) for value in raw_roles if value)
+    return CurrentUser(str(user.id), getattr(user, "email", None), workspace_ids, roles)
 
 
 async def get_current_user(

@@ -2,12 +2,13 @@
 
 ## 1. Required infrastructure
 
-- Supabase project with migrations `001` through `006` applied in order.
+- Supabase project with migrations `001` through `007` applied in order.
 - Private `axis-media` storage bucket created by migration `003`.
 - API service running behind HTTPS with a stable worker process.
 - Web app deployed with the API base URL and Supabase browser values.
 - Email provider webhook configured to `POST /api/v1/notifications/webhook/email`.
 - Generic container templates are available in `apps/api/Dockerfile`, `apps/web/Dockerfile`, and `docker-compose.production.yml`.
+- Modal deployment entrypoint is available at `infrastructure/modal/modal_app.py`.
 
 ## 2. Required secrets and configuration
 
@@ -17,7 +18,7 @@ API secrets must be stored in the platform secret manager, never committed to `.
 - `APP_SECRET`
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
-- `SUPABASE_JWT_SECRET`
+- `SUPABASE_JWT_SECRET` (optional when the API uses Supabase Auth fallback verification)
 - `ENCRYPTION_KEY`
 - `OPENAI_API_KEY`, `NUELINK_API_KEY`, `SLACK_WEBHOOK_URL`
 - `EMAIL_API_KEY`, `EMAIL_FROM`, `EMAIL_WEBHOOK_SECRET`
@@ -38,6 +39,18 @@ Set `AUDIT_RETENTION_DAYS` to the organization default. Workspace admins can ove
 For scheduled audit maintenance, run `python maintenance.py --apply` from `apps/api` using the platform scheduler. Run it first without `--apply` to preview eligible records.
 
 For a container-based release, copy `apps/api/.env.example` to `apps/api/.env`, provide the web `NEXT_PUBLIC_*` build arguments through the compose environment, then run `docker compose -f docker-compose.production.yml up -d --build`.
+
+### Modal deployment
+
+Modal can host the API and the scheduled worker without a long-running VM. Create a Modal Secret named `nova-runtime` containing the API variables listed above, then deploy from the repository root. If the legacy JWT secret is unavailable, the API validates bearer tokens through Supabase Auth using the service-role key:
+
+```bash
+pip install modal
+modal setup
+modal deploy infrastructure/modal/modal_app.py
+```
+
+The deployment exposes the API at a generated `*.modal.run` URL. Set that URL as `NEXT_PUBLIC_API_BASE_URL` for the web deployment and set `ALLOWED_ORIGINS` in `nova-runtime` to the exact web origin. The `worker_tick` scheduled function claims one job every 15 seconds using the Supabase queue RPCs.
 
 ## 4. Rollback and incident handling
 
